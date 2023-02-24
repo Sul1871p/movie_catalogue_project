@@ -4,36 +4,41 @@
 const movieSearchBox = document.getElementById('movie-search-box');
 const searchList = document.getElementById('search-list');
 const resultGrid = document.getElementById('result-grid');
+const cardContainer = document.getElementById('card-container');
+const mainPhoto = document.getElementById('mainPhoto');
 
 // load movies from API
-async function loadMovies(searchTerm){
+async function loadMovies(searchTerm) {
     const URL = `https://omdbapi.com/?s=${searchTerm}&page=1&apikey=fc1fef96`;
     const res = await fetch(`${URL}`);
     const data = await res.json();
     // console.log(data.Search);
-    if(data.Response == "True") displayMovieList(data.Search);
+    if (data.Response == "True") {
+        displayMovieList(data.Search);
+        displayMovieCards(data.Search);
+    };
 }
 
-function findMovies(){
+function findMovies() {
     let searchTerm = (movieSearchBox.value).trim();
-    if(searchTerm.length > 0){
+    if (searchTerm.length > 0) {
         searchList.classList.remove('hide-search-list');
         loadMovies(searchTerm);
     } else {
         searchList.classList.add('hide-search-list');
     }
-   
+
 }
 
-function displayMovieList(movies){
+function displayMovieList(movies) {
     searchList.innerHTML = "";
-    for(let idx = 0; idx < movies.length; idx++){
+    for (let idx = 0; idx < movies.length; idx++) {
         let movieListItem = document.createElement('div');
         movieListItem.dataset.id = movies[idx].imdbID; // setting movie id in  data-id
         movieListItem.classList.add('search-list-item');
-        if(movies[idx].Poster != "N/A")
+        if (movies[idx].Poster != "N/A")
             moviePoster = movies[idx].Poster;
-        else 
+        else
             moviePoster = "image_not_found.png";
 
         movieListItem.innerHTML = `
@@ -50,7 +55,7 @@ function displayMovieList(movies){
     loadMovieDetails();
 }
 
-function loadMovieDetails(){
+function loadMovieDetails() {
     const searchListMovies = searchList.querySelectorAll('.search-list-item');
     searchListMovies.forEach(movie => {
         movie.addEventListener('click', async () => {
@@ -66,7 +71,7 @@ function loadMovieDetails(){
     });
 }
 
-function displayMovieDetails(details){
+function displayMovieDetails(details) {
     resultGrid.innerHTML = `
     <div class = "movie-poster">
         <img src = "${(details.Poster != "N/A") ? details.Poster : "image_not_found.png"}" alt = "movie poster">
@@ -88,9 +93,42 @@ function displayMovieDetails(details){
     `;
 }
 
+function displayMovieCards(details) {
+    for (let idx = 0; idx < movies.length; idx++) {
+        let movieListItem = document.createElement('div');
+        movieListItem.dataset.id = movies[idx].imdbID; // setting movie id in  data-id
+        movieListItem.classList.add('poster-card');
+        if (movies[idx].Poster != "N/A")
+            moviePoster = movies[idx].Poster;
+        else
+            moviePoster = "image_not_found.png";
+    cardContainer.innerHTML = `
+    <div>
+    <div class="movie-card">
+    <img src = "${moviePoster}">
+    </div>
+    <p class="card-title">${movies[idx].Title}</p>
+</div>
+    `;
+    cardContainer.appendChild(movieListItem);
+}
+loadMovieDetails();
+}
+
+let images = Array.from(document.getElementsByClassName("movie-card"))
+
+function updateImage(event){
+    let image = event.target
+
+    mainPhoto.src = image.src
+}
+
+images.forEach(function(image) {
+    image.addEventListener("click", updateImage)
+});
 
 window.addEventListener('click', (event) => {
-    if(event.target.className != "form-control"){
+    if (event.target.className != "form-control") {
         searchList.classList.add('hide-search-list');
     }
 });
