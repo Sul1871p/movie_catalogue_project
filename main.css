@@ -9,7 +9,7 @@
     --dark-color: #828E82;
     --light-dark-color: #FBFBFF;
     --yellow-color: #F5D000;
-
+    
 }
 
 * {
@@ -18,7 +18,6 @@
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     color: #7B0828;
-    /* background-image: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXBbcB-sotLrxK-_r-xLr9Q4bO23UXaNVhw&usqp=CAU ; */
 }
 
 body {
