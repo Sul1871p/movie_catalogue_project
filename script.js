@@ -6,12 +6,14 @@ const searchList = document.getElementById('search-list');
 const resultGrid = document.getElementById('result-grid');
 const cardContainer = document.getElementById('card-container');
 const mainPhoto = document.getElementById('mainPhoto');
+let searchedTerm = "";
 
 // load movies from API
 async function loadMovies(searchTerm) {
     const URL = `https://omdbapi.com/?s=${searchTerm}&page=1&apikey=fc1fef96`;
     const res = await fetch(`${URL}`);
     const data = await res.json();
+    searchedTerm = searchTerm;;
     // console.log(data.Search);
     if (data.Response == "True") {
         displayMovieList(data.Search);
@@ -59,14 +61,15 @@ function loadMovieDetails() {
     const searchListMovies = searchList.querySelectorAll('.search-list-item');
     searchListMovies.forEach(movie => {
         movie.addEventListener('click', async () => {
-            // window.location.href="http://127.0.0.1:5500/moviepage.html"
-            // console.log(movie.dataset.id);
             searchList.classList.add('hide-search-list');
-            movieSearchBox.value = "";
             const result = await fetch(`http://www.omdbapi.com/?i=${movie.dataset.id}&apikey=285ebe6c`);
+            //movieSearchBox.value = "";
+            console.log(movie.dataset.id)
             const movieDetails = await result.json();
-            // console.log(movieDetails);
             displayMovieDetails(movieDetails);
+            window.location.href=`http://127.0.0.1:5500/moviepage.html?movieID=${movie.dataset.id}`
+            // console.log(movie.dataset.id);
+            // console.log(movieDetails);
         });
     });
 }
