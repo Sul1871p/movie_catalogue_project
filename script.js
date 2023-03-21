@@ -5,6 +5,7 @@ const movieSearchBox = document.getElementById('movie-search-box');
 const searchList = document.getElementById('search-list');
 const resultGrid = document.getElementById('result-grid');
 const cardContainer = document.getElementById('card-container');
+const posterCard = document.getElementById('poster-card');
 const mainPhoto = document.getElementById('mainPhoto');
 let searchedTerm = "";
 
@@ -67,7 +68,7 @@ function loadMovieDetails() {
             console.log(movie.dataset.id)
             const movieDetails = await result.json();
             displayMovieDetails(movieDetails);
-            window.location.href=`http://127.0.0.1:5500/moviepage.html?movieID=${movie.dataset.id}`
+            window.location.href = `http://127.0.0.1:5500/moviepage.html?movieID=${movie.dataset.id}`
             // console.log(movie.dataset.id);
             // console.log(movieDetails);
         });
@@ -105,7 +106,7 @@ function displayMovieCards(details) {
             moviePoster = movies[idx].Poster;
         else
             moviePoster = "image_not_found.png";
-    cardContainer.innerHTML = `
+        cardContainer.innerHTML = `
     <div>
     <div class="movie-card">
     <img src = "${moviePoster}">
@@ -113,25 +114,43 @@ function displayMovieCards(details) {
     <p class="card-title">${movies[idx].Title}</p>
 </div>
     `;
-    cardContainer.appendChild(movieListItem);
+        cardContainer.appendChild(movieListItem);
+    }
+    loadMovieDetails();
 }
-loadMovieDetails();
-}
-
-let images = Array.from(document.getElementsByClassName("movie-card"))
-
-function updateImage(event){
-    let image = event.target
-
-    mainPhoto.src = image.src
-}
-
-images.forEach(function(image) {
-    image.addEventListener("click", updateImage)
-});
-
 window.addEventListener('click', (event) => {
     if (event.target.className != "form-control") {
         searchList.classList.add('hide-search-list');
     }
 });
+
+let json_url = "movie.json";
+fetch(json_url).then(Response => Response.json())
+    .then((data) => {
+        data.forEach((ele, i) => {
+            let { Title, Poster } = ele;
+            let card = document.createElement('div');
+            card.classList.add('poster-card');
+            card.innerHTML = `<div>
+         <div class="movie-card">
+         <img src="${Poster}" alt="movie poster">
+     </div >
+        <p class="card-title">${Title}</p>
+        </div>
+         `;
+            cardContainer.appendChild(card);
+        })
+        let images = Array.from(document.getElementsByClassName("movie-card"))
+        function updateImage(event) {
+            let image = event.target
+        
+            mainPhoto.src = image.src
+        }
+        images.forEach(function (image) {
+            image.addEventListener("click", updateImage)
+        });
+    });
+
+   
+
+
